@@ -49,6 +49,7 @@ jobs:
       - name: Run Container
         run: |
           docker run data-container
+
   build:
     needs: testing
     runs-on: ubuntu-latest
@@ -57,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build Docker Image
-        run: docker build -f Dockerfile.base -t "${CONTAINER}" .
+        run: docker build -f Dockerfile.base -t ${CONTAINER} .
       - name: Tag and Preview Container
         run: |
           DOCKER_TAG=$(docker run "${CONTAINER}:latest" --version)
