@@ -60,6 +60,7 @@ def write_file(filename, content):
     """
     with open(filename, "w") as fd:
         fd.write(content)
+    return filename
 
 
 def write_json(json_obj, filename, pretty=True):

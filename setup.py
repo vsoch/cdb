@@ -12,7 +12,6 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
 from setuptools import setup, find_packages
-import codecs
 import os
 
 

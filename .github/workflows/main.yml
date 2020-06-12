@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches_ignore: []
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup black environment
+        run: conda create --quiet --name black black pyflakes
+
+      - name: Check formatting with black
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate black
+          black --check .
+
+      - name: Check imports with pyflakes
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate black
+          pyflakes .
+
+
+  testing:
+    needs: formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup testing environment
+        run: conda create --quiet --name testing pytest
+
+      - name: Run Tests
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate testing
+          pip install -e .[all]
+          pytest -sv tests/*.py
+
+      - name: Test Docker Build
+        run: docker build -t data-container .
+      - name: Run Container
+        run: |
+          docker run data-container
+
+  build:
+    needs: testing
+    runs-on: ubuntu-latest
+    env:
+      CONTAINER: quay.io/vanessa/cdb
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker Image
+        run: docker build -f Dockerfile.base -t ${CONTAINER} .
+      - name: Tag and Preview Container
+        run: |
+          DOCKER_TAG=$(docker run "${CONTAINER}:latest" --version)
+          echo "Docker tag is: ${DOCKER_TAG}"
+          docker run ${CONTAINER} --help

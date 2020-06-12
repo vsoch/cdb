@@ -13,5 +13,5 @@ and **Merged pull requests**. Critical items to know are:
 
 The versions coincide with releases on pip.
 
-## [0.0.x](https://github.com/singularityhub/cdb/master) (0.0.x)
+## [0.0.x](https://github.com/vsoch/cdb/master) (0.0.x)
  - skeleton release (0.0.0)

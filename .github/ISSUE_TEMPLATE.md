@@ -1,4 +1,4 @@
-* QueueMe version:
+* cdb version:
 * Python version:
 * Operating System:
 
