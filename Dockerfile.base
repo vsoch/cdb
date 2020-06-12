@@ -10,5 +10,5 @@ RUN /bin/bash -c "install_packages wget git ca-certificates && \
 ADD . /tmp/repo
 WORKDIR /tmp/repo
 RUN pip install .[all]
-ENTYPOINT ["cdb"]
+ENTRYPOINT ["cdb"]
 CMD ["--help"]
