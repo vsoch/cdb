@@ -4,7 +4,7 @@ import (
 	"log"
 	"fmt"
 
-	"github.com/singularityhub/containerdb"
+	"github.com/vsoch/containerdb"
 )
 
 func main() {

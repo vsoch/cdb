@@ -9,14 +9,12 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from cdb.main import ContainerDatabase
-from cdb.logger import bot
-import sys
 
 
 def main(args, extra):
 
     # Create a Container database
     db = ContainerDatabase(path=args.path)
-    output = db.generate(
+    db.generate(
         output=args.output, template=args.template, force=args.force, func=args.function
     )

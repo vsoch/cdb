@@ -12,22 +12,22 @@ ADD . /tmp/repo
 WORKDIR /tmp/repo
 RUN pip install .[all]
 
-WORKDIR /scif/data
+WORKDIR /data
 COPY ./tests/data .
-RUN cdb generate /scif/data --out /db.go
+RUN cdb generate /data --out /db.go
 
 FROM golang:1.13-alpine3.10 as builder
 COPY --from=generator /db.go /db.go
-COPY --from=generator /scif/data /scif/data
+COPY --from=generator /data /data
 
 # Dependencies
 RUN apk add git && \
-    go get github.com/singularityhub/containerdb && \
+    go get github.com/vsoch/containerdb && \
     GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /db -i /db.go
 
 FROM scratch
 LABEL MAINTAINER @vsoch
-COPY --from=builder /scif/data /scif/data
+COPY --from=builder /data /data
 COPY --from=builder /db /db
 
 CMD ["/db"]

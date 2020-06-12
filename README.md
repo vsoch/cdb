@@ -1,6 +1,6 @@
 # Container Database (cdb)
 
-This is the Python support tool for [containerdb](https://github.com/singularityhub/containerdb)
+This is the Python support tool for [containerdb](https://github.com/vsoch/containerdb)
 to support generation of [data containers](https://github.com/singularityhub/data-container).
 Python is more friendly to generating arbitrary data structures, and is popular among the
 data science community, so I chose it for metadata generation instead of using GoLang.
@@ -12,7 +12,7 @@ Generation works as follows:
 
  1. The library will take as input some data folder
  2. The user defines a function to parse each file and generate a dataset, or a default function is used
- 3. A GoLang template is generated to be compiled along with [containerdb](https://github.com/singularityhub/containerdb) to generate a container entrypoint and in-memory database.
+ 3. A GoLang template is generated to be compiled along with [containerdb](https://github.com/vsoch/containerdb) to generate a container entrypoint and in-memory database.
 
 ## Docker Usage
 
@@ -52,7 +52,7 @@ $ pip install cdb
 or
 
 ```bash
-git clone git@github.com:singularityhub/cdb
+git clone git@github.com:vsoch/cdb
 cd cdb
 pip install -e .
 ```
@@ -80,7 +80,7 @@ or do it locally with your own GoLang install and then add to the container.
 For example, to compile:
 
 ```bash
-go get github.com/singularityhub/containerdb && \
+go get github.com/vsoch/containerdb && \
 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /db -i /db.go
 ```
 
