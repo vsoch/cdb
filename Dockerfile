@@ -8,7 +8,7 @@ RUN /bin/bash -c "install_packages wget git ca-certificates && \
     rm Miniconda3-latest-Linux-x86_64.sh"
 
 # TODO this should install from pip
-ADD . /tmp/repo
+COPY . /tmp/repo
 WORKDIR /tmp/repo
 RUN pip install .[all]
 
