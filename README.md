@@ -29,16 +29,74 @@ Thus, to run the dummy example here using the [Dockerfile](Dockerfile):
 $ docker build -t data-container .
 ```
 
-And then run to see a basic print of the data added (these functions need to
-be further developed to have an interface to query data, and also extract
-more useful metadata.
+We then have a simple way to do the following:
+
+**metadata**
+
+If we just run the container, we get a listing of all metadata alongside the key.
 
 ```bash
-docker run data-container
-$ docker run data-container
-value is {"size": 9, "sha256": "327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4"}
-value is {"size": 8, "sha256": "3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816"}
+$ docker run entrypoint 
+/data/avocado.txt {"size": 9, "sha256": "327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4"}
+/data/tomato.txt {"size": 8, "sha256": "3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816"}
 ```
+
+**list** 
+
+We can also just list data files with `-ls`
+
+```bash
+$ docker run entrypoint -ls
+/data/avocado.txt
+/data/tomato.txt
+```
+
+**orderby**
+
+Or we can list ordered by one of the metadata items:
+
+```bash
+$ docker run entrypoint -metric size
+Order by size
+/data/tomato.txt: {"size": 8, "sha256": "3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816"}
+/data/avocado.txt: {"size": 9, "sha256": "327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4"}
+```
+
+**search**
+
+Or search for a specific metric based on value.
+
+```bash
+$ docker run entrypoint -metric size -search 8
+/data/tomato.txt 8
+
+$ docker run entrypoint -metric sha256 -search 8
+/data/avocado.txt 327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4
+/data/tomato.txt 3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816
+```
+
+**get**
+
+Or we can get a particular file metadata by it's name:
+
+```bash
+$ docker run entrypoint -get /data/avocado.txt
+/data/avocado.txt {"size": 9, "sha256": "327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4"}
+```
+
+or a partial match:
+
+```bash
+$ docker run entrypoint -get /data/
+/data/avocado.txt {"size": 9, "sha256": "327bf8231c9572ecdfdc53473319699e7b8e6a98adf0f383ff6be5b46094aba4"}
+/data/tomato.txt {"size": 8, "sha256": "3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816"}
+```
+
+This is very simple usage, but the idea is powerful! We can interact with the dataset
+and search it without needing an operating system. It follows that we can develop
+customized data-containers based on the format / organization of the data inside 
+(e.g., a data-container that knows how to expose inputs, outputs, etc.)
+
 
 ## Python Usage
 

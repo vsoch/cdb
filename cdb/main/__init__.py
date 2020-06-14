@@ -72,16 +72,19 @@ class ContainerDatabase:
         # Retrieve the requested function
         func = self.get_function(func)
 
-        # For each filename, extract metadata
+        # For each filename, extract metadata and unique keys
+        keys = set()
         for filename in self.files:
             result = func(filename)
             if isinstance(result, dict):
+                [keys.add(x) for x in result]
                 result = json.dumps(result)
             self.metadata[filename] = result
 
         # Populate the template
         template = Template(template)
-        script = template.render(updates=self.metadata)
+        script = template.render(updates=self.metadata, indices=keys)
+        print(script)
 
         if output is not None:
             return write_file(output, script)

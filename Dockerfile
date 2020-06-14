@@ -10,24 +10,24 @@ RUN /bin/bash -c "install_packages wget git ca-certificates && \
 # TODO this should install from pip
 COPY . /tmp/repo
 WORKDIR /tmp/repo
-RUN pip install .[all]
+RUN pip install .
 
 WORKDIR /data
 COPY ./tests/data .
-RUN cdb generate /data --out /db.go
+RUN cdb generate /data --out /entrypoint.go
 
 FROM golang:1.13-alpine3.10 as builder
-COPY --from=generator /db.go /db.go
+COPY --from=generator /entrypoint.go /entrypoint.go
 COPY --from=generator /data /data
 
 # Dependencies
 RUN apk add git && \
     go get github.com/vsoch/containerdb && \
-    GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /db -i /db.go
+    GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /entrypoint -i /entrypoint.go
 
 FROM scratch
 LABEL MAINTAINER @vsoch
 COPY --from=builder /data /data
-COPY --from=builder /db /db
+COPY --from=builder /entrypoint /entrypoint
 
-CMD ["/db"]
+ENTRYPOINT ["/entrypoint"]
