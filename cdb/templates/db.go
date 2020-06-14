@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"runtime"
 	"strings"
 
 	"github.com/vsoch/containerdb"
@@ -19,6 +20,14 @@ func initdb(db *containerdb.DB) error {
                 {% endfor %}
 		return err
 	})
+}
+
+// start means that we run the container forever (intended for orchestration)
+func start() {
+	fmt.Println("Starting data-container")
+keepgoing:
+	runtime.Gosched()
+	goto keepgoing
 }
 
 // searchdb for a particular index for a term
@@ -100,6 +109,9 @@ func main() {
 
 	// List files
 	listPtr := flag.Bool("ls", false, "List all files.")
+
+	// sleep process to keep container running
+	startPtr := flag.Bool("start", false, "Start container and keep running.")
 	flag.Parse()
 
 	// Ensure metric is valid, if provided
@@ -119,8 +131,12 @@ func main() {
 		// Initialize the database with content and indices
 		initdb(db)
 
+		// Start the container for some orchestration
+		if *startPtr == true {
+			start()
+
 		// List files in database, or view all metadata
-		if *listPtr == true {
+		} else if *listPtr == true {
 			listdb(db)
 
 		// Get metadata based on a key

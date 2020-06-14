@@ -1,0 +1,19 @@
+version: "3"
+services:
+  base:
+    restart: always
+    image: busybox
+    entrypoint: ["tail", "-f", "/dev/null"]
+    volumes:
+      - data-volume:/data
+
+  data:
+    restart: always
+    image: data-container
+    command: ["-start"]
+    volumes:
+      - data-volume:/data
+
+volumes:
+  data-volume:
+

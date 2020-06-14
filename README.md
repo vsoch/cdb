@@ -7,14 +7,39 @@ data science community, so I chose it for metadata generation instead of using G
 
 [![PyPI version](https://badge.fury.io/py/cdb.svg)](https://badge.fury.io/py/cdb)
 
+> Have your data and use it too!
 
-Generation works as follows:
+![assets/img/logo/logo.png](assets/img/logo/logo.png)
 
- 1. The library will take as input some data folder
- 2. The user defines a function to parse each file and generate a dataset, or a default function is used
- 3. A GoLang template is generated to be compiled along with [containerdb](https://github.com/vsoch/containerdb) to generate a container entrypoint and in-memory database.
+For documentation and full examples see [vsoch.github.io/cdb](https://vsoch.github.io/cdb). These
+examples are also available in the [examples](examples) folder.
 
-## Docker Usage
+## Getting Started
+
+### What is a Data Container?
+
+A data container is generally an operating-system-less container that is optimized
+to provide data, either for query/search, or binding for analysis. The qualities of
+the data container should be:
+
+ 1. It can be mounted to containers with operating systems to run analysis
+ 2. It can be interacted with on it's own to search metadata about the data
+ 3. It should not have an operating system.
+
+### How do we generate one?
+
+The generation is fairly simple! It comes down to a three step multistage build:
+
+ 1. **Step 1** We install [cdb](https://github.com/vsoch/cdb) to generate a GoLang template for an [in-memory database](https://github.com/vsoch/containerdb) for our data) 
+ 2. **Step 2** We compile the binary into an entrypoint
+ 3. **Step 3** We add the data and the binary entrypoint to a scratch container (no operating system).
+
+And then we interact with it! This tutorial will show you the basic steps to
+perform the multistage-build using a simple [Dockerfile](https://github.com/vsoch/cdb/tree/master/examples/docker-simple/Dockerfile) along with the data folder. The [Dockerfile](Dockerfile) in the base of the repository also is a good example.
+
+## Usage
+
+### Docker Usage
 
 The intended usage is via Docker, so you don't need to worry about installation of
 Python, GoLang, and multistage builds to basically:
@@ -92,7 +117,78 @@ $ docker run entrypoint -get /data/
 /data/tomato.txt {"size": 8, "sha256": "3b7721618a86990a3a90f9fa5744d15812954fba6bb21ebf5b5b66ad78cf5816"}
 ```
 
-This is very simple usage, but the idea is powerful! We can interact with the dataset
+**start**
+
+The start command is intended to keep the container running, if we are using
+it with an orchestrator.
+
+```bash
+$ docker run data-container -start
+```
+
+### Orchestration
+
+It's more likely that you'll want to interact with files in the container via
+some analysis, or more generally, another container. Let's put together
+a quick `docker-compose.yml` to do exactly that.
+
+```
+version: "3"
+services:
+  base:
+    restart: always
+    image: busybox
+    entrypoint: ["tail", "-f", "/dev/null"]
+    volumes:
+      - data-volume:/data
+
+  data:
+    restart: always
+    image: data-container
+    command: ["-start"]
+    volumes:
+      - data-volume:/data
+
+volumes:
+  data-volume:
+```
+
+Notice that the command for the data-container to start is `-start`, which
+is important to keep it running. After building our `data-container`, we can then bring these containers up:
+
+
+```bash
+$ docker-compose up -d
+Starting docker-simple_base_1   ... done
+Recreating docker-simple_data_1 ... done
+```
+```bash
+$ docker-compose ps
+        Name                Command         State   Ports
+---------------------------------------------------------
+docker-simple_base_1   tail -f /dev/null    Up           
+docker-simple_data_1   /entrypoint -start   Up           
+```
+
+We can then shell inside and see our data!
+
+```bash
+$ docker exec -it docker-simple_base_1 sh
+/ # ls /data/
+avocado.txt  tomato.txt
+```
+
+The metadata is still available for query by interacting with the data-container
+entrypoint:
+
+```bash
+$ docker exec docker-simple_data_1 /entrypoint -ls
+/data/avocado.txt
+/data/tomato.txt
+```
+
+Depending on your use case, you could easily make this available inside the
+other container. This is very simple usage, but the idea is powerful! We can interact with the dataset
 and search it without needing an operating system. It follows that we can develop
 customized data-containers based on the format / organization of the data inside 
 (e.g., a data-container that knows how to expose inputs, outputs, etc.)
@@ -183,13 +279,7 @@ output = db.generate(output="db.go", force=True)
 
 Currently, functions for parsing metadata are named in [cdb/functions.py](cdb/functions.py),
 however you can also define a custom import path. This has not yet been tested 
-and will be soon.
-
-**under development**
-
-## TODO
- - add build prefix
- - ensure cdb installed from pip
+and will be soon. We will also be added more real world examples soon.
 
 ## License
 
