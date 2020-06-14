@@ -4,7 +4,7 @@ title:  "Docker simple database example"
 date: 2020-06-13 16:00:46
 author: "@vsoch"
 categories:
-- News
+- Tutorial
 ---
 
 
