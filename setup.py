@@ -16,9 +16,9 @@ import os
 
 
 def get_lookup():
-    """get version by way of version file, returns a 
-       lookup dictionary with several global variables without
-       needing to import singularity
+    """get version by way of version file, returns a
+    lookup dictionary with several global variables without
+    needing to import singularity
     """
     lookup = dict()
     version_file = os.path.join("cdb", "version.py")
@@ -29,7 +29,7 @@ def get_lookup():
 
 def get_reqs(lookup=None, key="INSTALL_REQUIRES"):
     """get requirements, mean reading in requirements and versions from
-       the lookup obtained with get_lookup
+    the lookup obtained with get_lookup
     """
     if lookup == None:
         lookup = get_lookup()
@@ -71,7 +71,6 @@ with open("README.md") as filey:
 ################################################################################
 
 if __name__ == "__main__":
-
     INSTALL_REQUIRES = get_reqs(lookup)
     TESTS_REQUIRES = get_reqs(lookup, "TESTS_REQUIRES")
     SCHEMAORG_REQUIRES = get_reqs(lookup, "SCHEMAORG_REQUIRES")
@@ -96,7 +95,10 @@ if __name__ == "__main__":
         setup_requires=["pytest-runner"],
         install_requires=INSTALL_REQUIRES,
         tests_require=TESTS_REQUIRES,
-        extras_require={"schemaorg": SCHEMAORG_REQUIRES, "all": ALL_REQUIRES,},
+        extras_require={
+            "schemaorg": SCHEMAORG_REQUIRES,
+            "all": ALL_REQUIRES,
+        },
         classifiers=[
             "Intended Audience :: Science/Research",
             "Intended Audience :: Developers",
