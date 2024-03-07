@@ -9,7 +9,7 @@ data science community, so I chose it for metadata generation instead of using G
 
 > Have your data and use it too!
 
-![assets/img/logo/logo.png](assets/img/logo/logo.png)
+![docs/assets/img/logo/logo.png](docs/assets/img/logo/logo.png)
 
 For documentation and full examples see [vsoch.github.io/cdb](https://vsoch.github.io/cdb). These
 examples are also available in the [examples](examples) folder.
