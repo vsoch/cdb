@@ -1,4 +1,4 @@
-FROM bitnami/minideb:stretch as generator
+FROM bitnami/minideb as generator
 # docker build -t data-container .
 ENV PATH /opt/conda/bin:${PATH}
 ENV LANG C.UTF-8
