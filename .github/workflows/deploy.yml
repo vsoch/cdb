@@ -1,6 +1,7 @@
 name: deploy
 
 on:
+  pull_request: []
   push:
     branches:
       - master
@@ -9,17 +10,22 @@ jobs:
   docker-deploy:
     runs-on: ubuntu-latest
     env:
-      CONTAINER: quay.io/vanessa/cdb
+      CONTAINER: ghcr.io/vsoch/cdb
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build Docker Image
         run: docker build -f Dockerfile.base -t "${CONTAINER}" .
-      - name: Log In to Quay.io
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login quay.io -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: GHCR Login
+        if: (github.event_name != 'pull_request')
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Tag and Push images
+        if: (github.event_name != 'pull_request')
         run: |
           DOCKER_TAG=$(docker run "${CONTAINER}:latest" --version)
           echo "Docker tag is: ${DOCKER_TAG}"

@@ -16,8 +16,8 @@ here = os.path.dirname(os.path.abspath(__file__))
 
 def get_template(name, load=True):
     """Given the name of a template (a go file to use to generate the dataset
-       metadata) return the template path if it exists. Otherwise, exit on
-       error
+    metadata) return the template path if it exists. Otherwise, exit on
+    error
     """
     # The user can provide a custom template, must have {{ updates }} to include
     if not os.path.exists(name):

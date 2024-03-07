@@ -12,7 +12,6 @@ from cdb.main import ContainerDatabase
 
 
 def main(args, extra):
-
     # Create a Container database
     db = ContainerDatabase(path=args.path)
     db.generate(
