@@ -26,22 +26,20 @@ bot = logging.getLogger("cdb.main")
 
 class ContainerDatabase:
     """A container database metadata generator will take some input folder
-       of files, and recursively run a user-provided or cdb-provided function
-       to extract metadata for each one. If no custom function is provided,
-       we provide basic metadata about file versions.
+    of files, and recursively run a user-provided or cdb-provided function
+    to extract metadata for each one. If no custom function is provided,
+    we provide basic metadata about file versions.
     """
 
     def __init__(self, path, pattern="*"):
-        """extract metadata for some recursive set of data objects
-        """
+        """extract metadata for some recursive set of data objects"""
         self.get_files(path, pattern)
         self.path = path
         self.pattern = pattern
         self.metadata = {}
 
     def get_files(self, path, pattern="*"):
-        """return files, given update path and pattern
-        """
+        """return files, given update path and pattern"""
         self.path = path
         self.pattern = pattern
         return self.files
@@ -49,7 +47,7 @@ class ContainerDatabase:
     @property
     def files(self):
         """Given a path, check that it exists, and then create an iterator
-           to go over files.
+        to go over files.
         """
         if self.path in [".", None]:
             self.path = os.getcwd()
@@ -59,8 +57,8 @@ class ContainerDatabase:
 
     def generate(self, output=None, template="db.go", force=False, func=None):
         """Given an output file name and a template, iterate
-           through files and generate the in-memory database golang file to
-           compile into a container.
+        through files and generate the in-memory database golang file to
+        compile into a container.
         """
         bot.debug(f"Loading template {template}")
         template = get_template(template)
@@ -91,13 +89,11 @@ class ContainerDatabase:
         return script
 
     def export_dockerfile(self, name="Dockerfile"):
-        """export a Dockerfile that will perform a multistage build to
-        """
+        """export a Dockerfile that will perform a multistage build to"""
         pass
 
     def get_function(self, funcname=None):
-        """Given a function name, return it. Exit on error if not found.
-        """
+        """Given a function name, return it. Exit on error if not found."""
         # Default to cdb.functions.basic
         funcname = funcname or "basic"
 

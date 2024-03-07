@@ -16,8 +16,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 
 
 def test_generation(tmp_path):
-    """test generation with default settings
-    """
+    """test generation with default settings"""
     from cdb.main import ContainerDatabase
 
     path = os.path.join(here, "data")

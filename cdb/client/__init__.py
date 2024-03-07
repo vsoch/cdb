@@ -40,7 +40,10 @@ def get_parser():
 
     description = "actions for cdb"
     subparsers = parser.add_subparsers(
-        help="cdb actions", title="actions", description=description, dest="command",
+        help="cdb actions",
+        title="actions",
+        description=description,
+        dest="command",
     )
 
     # print version and exit
@@ -48,11 +51,15 @@ def get_parser():
 
     # Generate a key for the interface
     generate = subparsers.add_parser(
-        "generate", help="generate a template go script for container entrypoint.",
+        "generate",
+        help="generate a template go script for container entrypoint.",
     )
 
     generate.add_argument(
-        "path", help="Path to dataset files.", nargs="?", default=".",
+        "path",
+        help="Path to dataset files.",
+        nargs="?",
+        default=".",
     )
 
     # Specify output file, defaults to db.go
@@ -91,14 +98,13 @@ def get_parser():
 
 
 def main():
-    """main entrypoint for cdb
-    """
+    """main entrypoint for cdb"""
 
     parser = get_parser()
 
     def help(return_code=0):
-        """print help, including the software version and active client 
-           and exit with return code.
+        """print help, including the software version and active client
+        and exit with return code.
         """
         version = cdb.__version__
 

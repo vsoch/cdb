@@ -13,7 +13,6 @@ from cdb.utils.file import get_file_hash
 
 
 def basic(filename):
-    """Given a filename, return a dictionary with basic metadata about it
-    """
+    """Given a filename, return a dictionary with basic metadata about it"""
     st = os.stat(filename)
     return {"size": st.st_size, "sha256": get_file_hash(filename)}
